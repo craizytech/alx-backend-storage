@@ -12,7 +12,7 @@ class Cache:
         __redis = redis.Redis()
         __redis.flushdb()
 
-    def store(self, data: any):
+    def store(self, data: str | bytes | int | float) -> str:
         """
         This method stores the data passed into it in redis.
 
@@ -23,6 +23,6 @@ class Cache:
             uuid (string): the Id of the stored object
         """
         data_id = str(uuid4())
-        self._redis.set(data_id, data)
+        self.__redis.set(data_id, data)
 
         return data
