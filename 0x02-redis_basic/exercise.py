@@ -9,8 +9,8 @@ class Cache:
     """This class contains operations done on redis"""
     def __init__(self):
         """This is the constructor method of the class"""
-        _redis = redis.Redis()
-        _redis.flushdb()
+        __redis = redis.Redis()
+        __redis.flushdb()
 
     def store(self, data: any):
         """
