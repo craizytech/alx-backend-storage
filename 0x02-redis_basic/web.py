@@ -18,7 +18,7 @@ def cache_webpage(func: Callable) -> Callable:
         r.incr(count_key)
         cached_response = r.get(f"cached:{url}")
         if cached_response:
-            return cached_response
+            return cached_response.decode('utf-8')
 
         web_content = func(url)
         r.setex(f"cached:{url}", 10, web_content)
@@ -26,6 +26,7 @@ def cache_webpage(func: Callable) -> Callable:
         return web_content
 
     return wrapper_function
+
 
 @cache_webpage
 def get_page(url: str) -> str:
