@@ -27,7 +27,7 @@ def cache_webpage(func: Callable) -> Callable:
 
     return wrapper_function
 
-
+@cache_webpage
 def get_page(url: str) -> str:
     """Fetch the url content from the web"""
     response = requests.get(url)
