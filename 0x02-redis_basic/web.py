@@ -18,7 +18,7 @@ def cache_webpage(func: Callable) -> Callable:
         r.incr(count_key)
         cached_response = r.get(f"cached:{url}")
         if cached_response:
-            return cached_response.decode('utf-8')
+            return cached_response
 
         web_content = func(url)
         r.setex(f"cached:{url}", 10, web_content)
@@ -33,3 +33,5 @@ def get_page(url: str) -> str:
     """Fetch the url content from the web"""
     response = requests.get(url)
     return response.text
+
+get_page("https://google.com")
