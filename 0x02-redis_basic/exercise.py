@@ -13,7 +13,6 @@ def count_calls(func: Callable[..., Any]) -> Callable[..., Any]:
     has been called
     """
     @wraps(func)
-
     def wrapper_function(self, *args, **kwargs):
         key = func.__qualname__
         self._redis.incr(key)
