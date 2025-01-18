@@ -30,11 +30,7 @@ def call_history(method: Callable) -> Callable:
         input_key = method.__qualname__ + ':inputs'
         output_key = method.__qualname__ + ':outputs'
 
-        with self._redis.pipeline() as pipe:
-            for input in args:
-                pipe.rpush(input_key, str(input))
-            pipe.execute()
-
+        self._redis.rpush(input_key, str(args))
         result = method(self, *args, **kwargs)
         self._redis.rpush(output_key, result)
         return result
