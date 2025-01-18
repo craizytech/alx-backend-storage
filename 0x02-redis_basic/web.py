@@ -13,8 +13,12 @@ def call_counts(func: Callable) -> Callable:
     """tracks how many times a url has been accessed"""
     @wraps(func)
     def wrapper_function(url: str) -> str:
-        r.incr(f"count:{url}")
-        r.setex(f"count:{url}", 10)
+        count_key = f"count:{url}"
+        r.incr(count_key)
+
+        if not r.ttl(count_key):
+            r.setex(count_key, 10)
+
         return func(url)
 
     return wrapper_function
