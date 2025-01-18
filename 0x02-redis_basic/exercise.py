@@ -38,6 +38,23 @@ def call_history(method: Callable) -> Callable:
     return wrapper_function
 
 
+def replay(func: Callable[..., Any]) -> None:
+    """Displays the history of calls of a particular function"""
+    r = redis.Redis()
+    func_name = func.__qualname__
+    func_redis_inputs = r.lrange(f"{func_name}:inputs", 0, -1)
+    func_redis_outputs = r.lrange(f"{func_name}:outputs", 0, -1)
+
+    func_inputs = [input.decode('utf-8') for input in func_redis_inputs]
+    func_outputs = [output.decode('utf-8') for output in func_redis_outputs]
+
+    times_called = len(func_inputs)
+    print(f"{func_name} was called {times_called} times:")
+
+    for input, output in zip(func_inputs, func_outputs):
+        print(f"{func_name}(*{input}) -> {output}")
+
+
 class Cache:
     """This class contains operations done on redis"""
 
