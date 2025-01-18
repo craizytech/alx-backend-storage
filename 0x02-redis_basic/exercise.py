@@ -7,16 +7,16 @@ from functools import wraps
 from typing import Union, Callable, Optional, Any
 
 
-def count_calls(func: Callable[..., Any]) -> Callable[..., Any]:
+def count_calls(method: Callable[..., Any]) -> Callable[..., Any]:
     """
     counts how many times the method of the Cache class
     has been called
     """
-    @wraps(func)
+    @wraps(method)
     def wrapper_function(self, *args, **kwargs):
-        key = func.__qualname__
+        key = method.__qualname__
         self._redis.incr(key)
-        return func(self, *args, **kwargs)
+        return method(self, *args, **kwargs)
     return wrapper_function
 
 
