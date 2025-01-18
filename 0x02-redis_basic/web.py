@@ -9,22 +9,25 @@ import requests
 r = redis.Redis(decode_responses=True)
 
 
-def call_counts(func: Callable) -> Callable:
+def cache_webpage(func: Callable) -> Callable:
     """tracks how many times a url has been accessed"""
+
     @wraps(func)
     def wrapper_function(url: str) -> str:
         count_key = f"count:{url}"
         r.incr(count_key)
+        cached_response = r.get(f"cached:{url}")
+        if cached_response:
+            return cached_response
 
-        if not r.ttl(count_key):
-            r.setex(count_key, 10)
+        web_content = func(url)
+        r.setex(f"cached:{url}", 10, web_content)
 
-        return func(url)
+        return web_content
 
     return wrapper_function
 
 
-@call_counts
 def get_page(url: str) -> str:
     """Fetch the url content from the web"""
     response = requests.get(url)
